@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from myapp import views as MyAppView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^mypage/', MyAppView.DisplayMyPage),
+    url(r'^mypage_param/(?P<my_parameter>.+)', MyAppView.DisplayMyPageWithParameter),
 ]
