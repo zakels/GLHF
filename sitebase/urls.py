@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^mypage_param/(?P<my_parameter>.+)', MyAppView.DisplayMyPageWithParameter),
     url(r'^insert/(?P<isbn>.+);(?P<title>.+);(?P<memo>.*)', MyAppView.InsertBook),
     url(r'^show/(?P<isbn>.+)',MyAppView.DisplayBook),
+    url(r'^testfind/(?P<summonerName>.+)',MyAppView.findSummonerId),
 ]
