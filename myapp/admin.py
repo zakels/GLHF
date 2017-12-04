@@ -15,12 +15,20 @@ class ProfileInline(admin.StackedInline):
 
 class CustomUserAdmin(UserAdmin):
     inlines = (ProfileInline, )
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_id')
+    list_display = ('username', 'email', 'is_staff', 'get_id', 'get_sum_id' , 'get_acc_id')
     list_select_related = ('profile', )
 
     def get_id(self, instance):
         return instance.profile.in_game_id
     get_id.short_description = 'In-Game ID'
+
+    def get_acc_id(self, instance):
+        return instance.profile.account_id
+    get_acc_id.short_description = 'Account ID'
+
+    def get_sum_id(self, instance):
+        return instance.profile.summoner_id
+    get_sum_id.short_description = 'Summoner ID'
 
     def get_inline_instances(self, request, obj=None):
         if not obj:
