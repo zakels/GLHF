@@ -54,3 +54,4 @@ def profile(request):
 # 2
 # from django.core import serializers
 # variable_name = serializer.serialize('json', User.objects.all())
+
