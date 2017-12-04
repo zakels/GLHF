@@ -24,4 +24,6 @@ urlpatterns = [
     url(r'^insert/(?P<isbn>.+);(?P<title>.+);(?P<memo>.*)', MyAppView.InsertBook),
     url(r'^show/(?P<isbn>.+)',MyAppView.DisplayBook),
     url(r'^testfind/(?P<summonerName>.+)',MyAppView.findSummonerId),
+    url(r'^getAccountId/(?P<summonerName>.+)',MyAppView.convertNameToAccountId),
+    url(r'^getSummonerInfo/(?P<summonerName>.+)',MyAppView.getSummonerInfo),
 ]

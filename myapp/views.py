@@ -32,3 +32,26 @@ def findSummonerId(request, summonerName):
     r = requests.get(url)
     data = r.json()
     return render(request, 'myapp/mypage.html', { 'welcome_text': 'API DATAS: ' + json.dumps(data) })
+
+def convertNameToAccountId(request,summonerName):
+    url = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/"+summonerName+api_key
+    r = requests.get(url)
+    data = r.json()
+    return render(request, 'myapp/mypage.html', { 'welcome_text': 'accountId: ' +
+        json.dumps(data['accountId']) })
+
+#def convertNameToSummonerId(request, summonerName):
+def convertNameToSummonerId(summonerName):
+    url = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/"+summonerName+api_key
+    r = requests.get(url)
+    data = r.json()
+    return data['id']
+#    return render(request, 'myapp/mypage.html', { 'welcome_text': 'summonerId: ' + json.dumps(data['id']) })
+
+def getSummonerInfo(request, summonerName):
+    url =  "https://na1.api.riotgames.com/lol/league/v3/leagues/by-summoner/"+str(convertNameToSummonerId(summonerName))+api_key
+    print (url)
+    r = requests.get(url)
+    data = r.json()
+    return render(request, 'myapp/mypage.html', { 'welcome_text': 'SummonerInfo: ' +
+        json.dumps(data) })
