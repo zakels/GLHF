@@ -5,6 +5,8 @@ from django.shortcuts import render
 from myapp.models import Book
 
 import requests, json
+api_format = "?api_key="
+api_key = api_format+"RGAPI-cc796626-90e8-4f70-ac34-f9e41e7a40ca"
 # Create your views here.
 
 def DisplayMyPage(request):
@@ -25,7 +27,7 @@ def DisplayBook(request, isbn):
 
 
 def findSummonerId(request, summonerName):
-    api_key = "?api_key=RGAPI-5511d848-5f31-4011-9dcc-a3d2e027ee3b"
+ #   api_key = "?api_key=RGAPI-5511d848-5f31-4011-9dcc-a3d2e027ee3b"
     url = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/"+summonerName+api_key
     r = requests.get(url)
     data = r.json()
