@@ -24,8 +24,9 @@
   	<a href="/login">Log In</a>
   {% endif %}
   <div class="search-container">
-    <form action="/">
-      <input type="text" placeholder="Search.." name="search">
+    <form action="/profile/" method="post" accept-charset="utf-8">
+		{% csrf_token %}
+      <input type="text" placeholder="Search.." name="q">
         <button type="submit"><i class="fa fa-search"></i>Search</button>
     </form>
   </div>
@@ -33,7 +34,7 @@
     
 <div class="content">
     
-    <h3> Recent 5 Matches of {{ user.profile.in_game_id }} </h3>
+    <h3> Recent 5 Matches of {{ summonerName }} </h3>
     <p> {{ game_id_1 }} {{ lane_1 }} {{ champion_1 }} {{ timestamp_1}} </p>
     <p> {{ game_id_2 }} {{ lane_2 }} {{ champion_2 }} {{ timestamp_2}} </p>
     <p> {{ game_id_3 }} {{ lane_3 }} {{ champion_3 }} {{ timestamp_3}} </p>

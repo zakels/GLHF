@@ -35,8 +35,13 @@ def index(request):
 	else:
 		return render(request, 'index.html')
 
-def recent(request):
-	aid = str(request.user.profile.account_id)
+def recent(request, user=None):
+        if user == None:
+            aid = str(request.user.profile.account_id)
+            user = str(request.user.profile.in_game_id)
+        else:
+            aid = str(findIds(user)['aid'])
+            user = str(user)
 	match_info = getRecentMatches(aid)
 
 	game_id_1 = match_info[0]['gameId']
@@ -65,6 +70,7 @@ def recent(request):
 	timestamp_5 = datetime.datetime.fromtimestamp(match_info[4]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 	return render(request, 'recent.html', {
+                        'summonerName' : user,
 			'game_id_1' : game_id_1,
 			'lane_1' : lane_1,
 			'champion_1' : champion_1,
@@ -185,7 +191,7 @@ def findIds(in_game_id):
 
 	return d_ids
 
-def signup(request): 
+def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
