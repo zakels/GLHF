@@ -24,8 +24,9 @@
   	<a href="/login">Log In</a>
   {% endif %}
   <div class="search-container">
-    <form action="{% url 'index' %}" method="get" accept-charset="utf-8">
-      <input type="text" placeholder="Search.." name="q">
+    <form action="/profile/" method="post" accept-charset="utf-8">
+        {% csrf_token %}
+		<input type="text" placeholder="Search.." name="q">
         <button type="submit"><i class="fa fa-search"></i>Search</button>
     </form>
   </div>
@@ -33,7 +34,9 @@
     
 <div class="content">
   {% if user.is_authenticated %}
-    {{ championName }}
+  <br>Summoner : {{summonerName}} </br>
+
+  	{{ championName }}
 
     {% if tier == "BRONZE" %}
       <img src = "{% static 'image/base-icons/bronze.png' %}"/>

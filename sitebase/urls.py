@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^logout/$', auth_views.logout, name='logout'),
     url(r'^signup/$', core_views.signup, name='signup'),
     url(r'^recent/$', core_views.recent, name='recent'),
+    url(r'^profile/$', core_views.profile, name='profile'),
 ]

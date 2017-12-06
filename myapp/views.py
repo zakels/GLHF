@@ -220,6 +220,33 @@ def signup(request):
 
 
 
+
+def profile(request):
+    if request.method == 'POST':
+        ids = findIds(request.POST.get('q', ''))
+#	if request.user.is_authenticated():
+        sid = str(ids['sid'])
+        summonerName = request.POST.get('q', '')
+        championId = findChampionMasteries(sid)
+        championName = findChampionName(championId)
+        img_splash = findChampionSplash(championId)
+        playerStat = findPlayerStat(sid)
+        tier = playerStat['tier']
+        rank = playerStat['rank']
+        wins = playerStat['wins']
+        losses = playerStat['losses']
+        return render(request, 'index.html', {
+		'championName' : championName,
+		'championSplash' : img_splash,
+                'summonerName' : summonerName,
+		'tier' : tier,
+		'rank' : rank,
+		'wins' : wins,
+		'losses' : losses
+	})
+    else:
+	return render(request, 'index.html')
+
 # 1
 # content_type="application/json"
 # json.dumps(user.as_json())
