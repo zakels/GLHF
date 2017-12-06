@@ -38,27 +38,27 @@ def index(request):
 def recent(request):
 	aid = str(request.user.profile.account_id)
 	match_info = getRecentMatches(aid)
-	
+
 	game_id_1 = match_info[0]['gameId']
 	lane_1 = match_info[0]['lane']
 	champion_1 = findChampionName(match_info[0]['champion'])
 	timestamp_1 = datetime.datetime.fromtimestamp(match_info[0]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
-	
-	game_id_2 = match_info[1]['gameId']
-	lane_2 = match_info[1]['lane']
+
+        game_id_2 = match_info[1]['gameId']
+        lane_2 = match_info[1]['lane']
 	champion_2 = findChampionName(match_info[1]['champion'])
 	timestamp_2 = datetime.datetime.fromtimestamp(match_info[1]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
-	
+
 	game_id_3 = match_info[2]['gameId']
 	lane_3 = match_info[2]['lane']
 	champion_3 = findChampionName(match_info[2]['champion'])
 	timestamp_3 = datetime.datetime.fromtimestamp(match_info[2]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
-	
-	game_id_4 = match_info[3]['gameId']
+
+        game_id_4 = match_info[3]['gameId']
 	lane_4 = match_info[3]['lane']
 	champion_4 = findChampionName(match_info[3]['champion'])
 	timestamp_4 = datetime.datetime.fromtimestamp(match_info[3]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
-	
+
 	game_id_5 = match_info[4]['gameId']
 	lane_5 = match_info[4]['lane']
 	champion_5 = findChampionName(match_info[4]['champion'])
@@ -113,29 +113,31 @@ def getRecentMatches(aid):
 
 def findChampionMasteries(sid):
 	url = "https://na1.api.riotgames.com/lol/champion-mastery/v3/champion-masteries/by-summoner/" + sid + api_key
-	r = requests.get(url)
+        r = requests.get(url)
 	data = r.json()
-	res = data[0]['championId']
+        res = 'No DATA'
+        if(len(data) > 0):
+            res = data[0]['championId']
 	return res
 
 def findChampionName(cid):
 	json_data = open('myapp/static/db/staticData.json')
 	d = json.load(json_data)
+        res = 'No DATA'
 	for i in d['data']:
 		for j in d['data'][i]:
 			if d['data'][i]['id'] == cid:
 				res = d['data'][i]['name']
-	
 	return res
 
 def findChampionKey(cid):
 	json_data = open('myapp/static/db/staticData.json')
 	d = json.load(json_data)
+        res = 'No DATA'
 	for i in d['data']:
 		for j in d['data'][i]:
 			if d['data'][i]['id'] == cid:
 				res = d['data'][i]['key']
-	
 	return res
 
 def findChampionSplash(cid):
