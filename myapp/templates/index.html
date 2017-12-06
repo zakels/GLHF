@@ -11,10 +11,8 @@
         <img src="{% static 'image/download.jpg' %}" alt="image errror"/>
     </div>
 <ul>
-    <li><a class="active" href="#home">Home</a></li>
-    <li><a href="#news">News</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#about">About</a></li>
+    <li><a class="active" href="/">My Stats</a></li>
+    <li><a href="/recent">Recent 5 Matches</a></li>
 </ul>
 
 <div id="navbar">
@@ -26,8 +24,8 @@
   	<a href="/login">Log In</a>
   {% endif %}
   <div class="search-container">
-    <form action="/action_page.php">
-      <input type="text" placeholder="Search.." name="search">
+    <form action="{% url 'index' %}" method="get" accept-charset="utf-8">
+      <input type="text" placeholder="Search.." name="q">
         <button type="submit"><i class="fa fa-search"></i>Search</button>
     </form>
   </div>
@@ -35,8 +33,26 @@
     
 <div class="content">
   {% if user.is_authenticated %}
-    {{ championId }}
     {{ championName }}
+
+    {% if tier == "BRONZE" %}
+      <img src = "{% static 'image/base-icons/bronze.png' %}"/>
+    {% elif tier == "SILVER" %}
+      <img src = "{% static 'image/base-icons/silver.png' %}"/>
+    {% elif tier == "GOLD" %}
+      <img src = "{% static 'image/base-icons/gold.png' %}"/>
+    {% elif tier == "PLATINUM" %}
+      <img src = "{% static 'image/base-icons/platinum.png' %}"/>
+    {% elif tier == "DIAMOND" %}
+      <img src = "{% static 'image/base-icons/diamond.png' %}"/>
+    {% elif tier == "MASTER" %}
+      <img src = "{% static 'image/base-icons/master.png' %}"/>
+    {% elif tier == "CHALLENGER" %}
+      <img src = "{% static 'image/base-icons/challenger.png' %}"/>
+    {% endif %}
+    {{ tier }} {{ rank }}
+    <p> Wins : {{ wins }} </p>
+    <p> Losses : {{ losses }} </p>
     <img src = "{{ championSplash }}">
   {% else %}
     <h3>Sticky Navigation Example</h3>
