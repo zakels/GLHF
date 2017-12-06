@@ -129,3 +129,5 @@ STATIC_URL = '/static/'
 # Redirect Login
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
+
+# Fixture Directory

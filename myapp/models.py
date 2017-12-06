@@ -16,18 +16,6 @@ class Profile(models.Model):
     account_id = models.BigIntegerField(default=0, unique=False)
     summoner_id = models.BigIntegerField(default=0, unique=False)
 
-# @receiver(post_save, sender=User)
-# def covertNameToAccAndSum(in_game_id):
-# 	url = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name" + in_game_id + api_key
-# 	r = request.get(url)
-# 	data = r.json()
-# 	account_id = json.dumps(data['accountId'])
-# 	summoner_id = json.dumps(data['id'])
-
-	    # def as_json(self):
-	    # 	return dict(
-	    # 		in_game_id = self.in_game_id
-	    # 		)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -38,8 +26,3 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
-	# def create_profile(sender, **kwargs):
-	# 	if kwargs['created']:
-	# 		user_profile = Profile.objects.create(user=kwargs['instance'])
-
-	# post_save.connect(create_profile, sender=User)
