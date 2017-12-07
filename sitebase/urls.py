@@ -27,4 +27,6 @@ urlpatterns = [
     url(r'^recent/$',core_views.recent, name='recent'),
     url(r'^recent/(?P<user>\w+)/$', core_views.recent, name='recent1'),
     url(r'^profile/$', core_views.profile, name='profile'),
+    url(r'^profile/(?P<user>\w+)/$', core_views.profile, name='recent1'),
+    url(r'^follow/$', core_views.follow, name='follow'),
 ]

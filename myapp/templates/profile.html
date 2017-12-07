@@ -35,7 +35,8 @@
     
 <div class="content">
   {% if user.is_authenticated %}
-      <br>Summoner : {{ summonerName }} </br>
+    {{ succ_msg }}
+    <br>Summoner : {{ summonerName }} </br>
   	{{ championName }}
 
     {% if tier == "BRONZE" %}
@@ -55,7 +56,9 @@
     {% endif %}
 
     {{ tier }} {{ rank }}
-
+    <form action="/profile/{{ summonerName }}" method="get">
+      <input type="submit" value="follow">
+    </form>
     <p> Wins : {{ wins }} </p>
     <p> Losses : {{ losses }} </p>
     <img src = "{{ championSplash }}">

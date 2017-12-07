@@ -15,6 +15,7 @@ class Profile(models.Model):
     in_game_id = models.CharField(max_length=30, blank=False, unique=False)
     account_id = models.BigIntegerField(default=0, unique=False)
     summoner_id = models.BigIntegerField(default=0, unique=False)
+    follow_list = models.TextField(null=True)
 
 
 @receiver(post_save, sender=User)

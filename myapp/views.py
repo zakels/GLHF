@@ -16,6 +16,7 @@ api_key = api_form + "RGAPI-f096fe9a-d356-42b3-a298-dcab88ddc54e"
 def index(request):
 	if request.user.is_authenticated():
 		sid = str(request.user.profile.summoner_id)
+		summonerName = request.user.profile.in_game_id
 		championId = findChampionMasteries(sid)
 		championName = findChampionName(championId)
 		img_splash = findChampionSplash(championId)
@@ -25,6 +26,7 @@ def index(request):
 		wins = playerStat['wins']
 		losses = playerStat['losses']
 		return render(request, 'index.html', {
+				'summonerName' : summonerName,
 				'championName' : championName,
 				'championSplash' : img_splash,
 				'tier' : tier,
@@ -36,12 +38,13 @@ def index(request):
 		return render(request, 'index.html')
 
 def recent(request, user=None):
-        if user == None:
-            aid = str(request.user.profile.account_id)
-            user = str(request.user.profile.in_game_id)
-        else:
-            aid = str(findIds(user)['aid'])
-            user = str(user)
+	if user == None:
+		aid = str(request.user.profile.account_id)
+		user = str(request.user.profile.in_game_id)
+	else:
+		aid = str(findIds(user)['aid'])
+		user = str(user)
+
 	match_info = getRecentMatches(aid)
 
 	game_id_1 = match_info[0]['gameId']
@@ -49,8 +52,8 @@ def recent(request, user=None):
 	champion_1 = findChampionName(match_info[0]['champion'])
 	timestamp_1 = datetime.datetime.fromtimestamp(match_info[0]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
-        game_id_2 = match_info[1]['gameId']
-        lane_2 = match_info[1]['lane']
+	game_id_2 = match_info[1]['gameId']
+	lane_2 = match_info[1]['lane']
 	champion_2 = findChampionName(match_info[1]['champion'])
 	timestamp_2 = datetime.datetime.fromtimestamp(match_info[1]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
@@ -59,7 +62,7 @@ def recent(request, user=None):
 	champion_3 = findChampionName(match_info[2]['champion'])
 	timestamp_3 = datetime.datetime.fromtimestamp(match_info[2]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
-        game_id_4 = match_info[3]['gameId']
+	game_id_4 = match_info[3]['gameId']
 	lane_4 = match_info[3]['lane']
 	champion_4 = findChampionName(match_info[3]['champion'])
 	timestamp_4 = datetime.datetime.fromtimestamp(match_info[3]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
@@ -70,7 +73,7 @@ def recent(request, user=None):
 	timestamp_5 = datetime.datetime.fromtimestamp(match_info[4]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 	return render(request, 'recent.html', {
-                        'summonerName' : user,
+			'summonerName' : user,
 			'game_id_1' : game_id_1,
 			'lane_1' : lane_1,
 			'champion_1' : champion_1,
@@ -102,7 +105,6 @@ def getRecentMatches(aid):
 
 	return res
 
-
 # def search(request):
 # 	query = request.GET['q']
 # 	ids = findIds(query)
@@ -119,17 +121,19 @@ def getRecentMatches(aid):
 
 def findChampionMasteries(sid):
 	url = "https://na1.api.riotgames.com/lol/champion-mastery/v3/champion-masteries/by-summoner/" + sid + api_key
-        r = requests.get(url)
+	r = requests.get(url)
 	data = r.json()
-        res = 'No DATA'
-        if(len(data) > 0):
-            res = data[0]['championId']
+	res = 'No DATA'
+
+	if(len(data) > 0):
+		res = data[0]['championId']
+
 	return res
 
 def findChampionName(cid):
 	json_data = open('myapp/static/db/staticData.json')
 	d = json.load(json_data)
-        res = 'No DATA'
+	res = 'No DATA'
 	for i in d['data']:
 		for j in d['data'][i]:
 			if d['data'][i]['id'] == cid:
@@ -139,7 +143,7 @@ def findChampionName(cid):
 def findChampionKey(cid):
 	json_data = open('myapp/static/db/staticData.json')
 	d = json.load(json_data)
-        res = 'No DATA'
+	res = 'No DATA'
 	for i in d['data']:
 		for j in d['data'][i]:
 			if d['data'][i]['id'] == cid:
@@ -224,34 +228,97 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
+# def follow(request):
+# 	if 
 
 
+def profile(request, user=None):
+	if request.method == 'POST':
+		ids = findIds(request.POST.get('q', ''))
+		sid = str(ids['sid'])
+		summonerName = request.POST.get('q', '')
+		championId = findChampionMasteries(sid)
+		championName = findChampionName(championId)
+		img_splash = findChampionSplash(championId)
+		playerStat = findPlayerStat(sid)
+		tier = playerStat['tier']
+		rank = playerStat['rank']
+		wins = playerStat['wins']
+		losses = playerStat['losses']
 
-def profile(request):
-    if request.method == 'POST':
-        ids = findIds(request.POST.get('q', ''))
-#	if request.user.is_authenticated():
-        sid = str(ids['sid'])
-        summonerName = request.POST.get('q', '')
-        championId = findChampionMasteries(sid)
-        championName = findChampionName(championId)
-        img_splash = findChampionSplash(championId)
-        playerStat = findPlayerStat(sid)
-        tier = playerStat['tier']
-        rank = playerStat['rank']
-        wins = playerStat['wins']
-        losses = playerStat['losses']
-        return render(request, 'index.html', {
-		'championName' : championName,
-		'championSplash' : img_splash,
-                'summonerName' : summonerName,
-		'tier' : tier,
-		'rank' : rank,
-		'wins' : wins,
-		'losses' : losses
-	})
-    else:
-	return render(request, 'index.html')
+		return render(request, 'profile.html', {
+			'championName' : championName,
+			'championSplash' : img_splash,
+			'summonerName' : summonerName,
+			'tier' : tier,
+			'rank' : rank,
+			'wins' : wins,
+			'losses' : losses,
+		})
+	elif request.method == 'GET':
+		ids = findIds(user)
+		sid = str(ids['sid'])
+		championId = findChampionMasteries(sid)
+		championName = findChampionName(championId)
+		img_splash = findChampionSplash(championId)
+		playerStat = findPlayerStat(sid)
+		tier = playerStat['tier']
+		rank = playerStat['rank']
+		wins = playerStat['wins']
+		losses = playerStat['losses']
+
+		if request.user.profile.follow_list is None:
+			lt = []
+			lt.append(ids)
+		else:
+			jsonDec = json.decoder.JSONDecoder()
+			lt = jsonDec.decode(request.user.profile.follow_list)
+			if ids in lt:
+				message = 'You are already following ' + user
+
+				return render(request, 'profile.html', {
+					'championName' : championName,
+					'championSplash' : img_splash,
+					'summonerName' : user,
+					'tier' : tier,
+					'rank' : rank,
+					'wins' : wins,
+					'losses' : losses,
+					'succ_msg' : message
+				})
+
+			else:
+				lt.append(ids)
+				request.user.profile.follow_list = json.dumps(lt)
+				request.user.save()
+		
+		message = 'You have followed ' + user
+
+		return render(request, 'profile.html', {
+			'championName' : championName,
+			'championSplash' : img_splash,
+			'summonerName' : user,
+			'tier' : tier,
+			'rank' : rank,
+			'wins' : wins,
+			'losses' : losses,
+			'succ_msg' : message
+		})
+	else:
+		return render(request, 'profile.html')
+
+def follow(request):
+	if request.user.is_authenticated():
+		summonerName = request.user.profile.in_game_id
+
+		return render(request, 'index.html', {
+				'summonerName' : summonerName,
+			})
+	else:
+		return render(request, 'index.html')
+
+# def follow(request):
+# 	if request.method == 'POST':
 
 # 1
 # content_type="application/json"
