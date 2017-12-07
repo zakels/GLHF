@@ -35,12 +35,21 @@
     
 <div class="content">
     
-    <h3> Recent 5 Matches of {{ summonerName }} </h3>
-    <p> {{ game_id_1 }} {{ lane_1 }} {{ champion_1 }} {{ timestamp_1}} </p>
+    <h3> List of Recent 5 matches of Your Friends </h3>
+    <table>
+    {% for item in data %}
+      {% for key, value in item.items %}
+          <tr>
+              <td> {{ key }}: </td> <td> {{ value }} </td>
+          </tr>
+      {% endfor %}
+    {% endfor %}
+    </table>
+<!--     <p> {{ game_id_1 }} {{ lane_1 }} {{ champion_1 }} {{ timestamp_1}} </p>
     <p> {{ game_id_2 }} {{ lane_2 }} {{ champion_2 }} {{ timestamp_2}} </p>
     <p> {{ game_id_3 }} {{ lane_3 }} {{ champion_3 }} {{ timestamp_3}} </p>
     <p> {{ game_id_4 }} {{ lane_4 }} {{ champion_4 }} {{ timestamp_4}} </p>
-    <p> {{ game_id_5 }} {{ lane_5 }} {{ champion_5 }} {{ timestamp_5}} </p>
+    <p> {{ game_id_5 }} {{ lane_5 }} {{ champion_5 }} {{ timestamp_5}} </p> -->
 
 </div>
 

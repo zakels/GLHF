@@ -17,7 +17,7 @@ class ProfileInline(admin.StackedInline):
 
 class CustomUserAdmin(UserAdmin):
     inlines = (ProfileInline, )
-    list_display = ('username', 'email', 'is_staff', 'get_id','get_sum_id','get_acc_id','get_list_follow',)
+    list_display = ('username', 'email', 'is_staff', 'get_id', 'get_sum_id' , 'get_acc_id', 'get_list_follow')
     list_select_related = ('profile', )
 
     def get_id(self, instance):
@@ -35,6 +35,7 @@ class CustomUserAdmin(UserAdmin):
     def get_list_follow(self, instance):
         return instance.profile.follow_list
     get_list_follow.short_description = 'Follow List'
+
     def get_inline_instances(self, request, obj=None):
         if not obj:
             return list()

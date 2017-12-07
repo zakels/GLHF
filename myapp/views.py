@@ -11,6 +11,7 @@ from myapp.forms import SignUpForm
 
 api_form = "?api_key="
 api_key = api_form + "RGAPI-35961e41-e909-4903-8cbe-3b3210eb32fb"
+
 # Create your views here.
 def index(request):
 	if request.user.is_authenticated():
@@ -111,6 +112,7 @@ def getRecentMatches(aid):
 	r = requests.get(url)
 	data = r.json()
 	res = data['matches']
+	print (aid)
 
 	return res
 
@@ -299,6 +301,7 @@ def profile(request, user=None):
 		})
 	elif request.method == 'GET':
 		ids = findIds(user)
+		ids['summonerName'] = user
 		sid = str(ids['sid'])
 		championId = findChampionMasteries(sid)
 		championName = findChampionName(championId)
@@ -314,7 +317,7 @@ def profile(request, user=None):
 			lt.append(ids)
 			request.user.profile.follow_list = json.dumps(lt)
 			request.user.save()
-                else:
+		else:
 			jsonDec = json.decoder.JSONDecoder()
 			lt = jsonDec.decode(request.user.profile.follow_list)
 			if ids in lt:
@@ -355,11 +358,40 @@ def follow(request):
 	if request.user.is_authenticated():
 		summonerName = request.user.profile.in_game_id
 
-		return render(request, 'index.html', {
-				'summonerName' : summonerName,
-			})
+		jsonDec = json.decoder.JSONDecoder()
+		lt = jsonDec.decode(request.user.profile.follow_list)
+
+		#{}
+		
+		llt = []
+		for item in lt:
+			said = str(item['aid'])
+			#print(said)
+			d = dict()
+			try:
+				match_info = getRecentMatches(said)
+				d['summonerName'] = item['summonerName']
+				d['gameId_1'] = match_info[0]['gameId']
+				d['lane_1'] = match_info[0]['lane']
+				d['champion_1'] = findChampionName(match_info[0]['champion'])
+				d['timestamp_1'] = datetime.datetime.fromtimestamp(match_info[0]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
+				d['gameId_2'] = match_info[1]['gameId']
+				d['lane_2'] = match_info[1]['lane']
+				d['champion_2'] = findChampionName(match_info[1]['champion'])
+				d['timestamp_2'] = datetime.datetime.fromtimestamp(match_info[1]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
+				d['gameId_3'] = match_info[2]['gameId']
+				d['lane_3'] = match_info[2]['lane']
+				d['champion_3'] = findChampionName(match_info[2]['champion'])
+				d['timestamp_3'] = datetime.datetime.fromtimestamp(match_info[2]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
+			except KeyError:
+				continue
+
+			llt.append(d)
+
+
+		return render(request, 'follow.html', {'data' : llt})
 	else:
-		return render(request, 'index.html')
+		return render(request, 'follow.html')
 
 # def follow(request):
 # 	if request.method == 'POST':
