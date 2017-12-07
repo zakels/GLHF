@@ -20,15 +20,18 @@ def index(request):
 		championId = findChampionMasteries(sid)
 		championName = findChampionName(championId)
 		img_splash = findChampionSplash(championId)
+		img_loadingArt = findChampionLoadingArt(championId)
 		playerStat = findPlayerStat(sid)
 		tier = playerStat['tier']
 		rank = playerStat['rank']
 		wins = playerStat['wins']
 		losses = playerStat['losses']
+
 		return render(request, 'index.html', {
 				'summonerName' : summonerName,
 				'championName' : championName,
 				'championSplash' : img_splash,
+				'championLoadingArt' : img_loadingArt,
 				'tier' : tier,
 				'rank' : rank,
 				'wins' : wins,
@@ -117,7 +120,6 @@ def getRecentMatches(aid):
 	r = requests.get(url)
 	data = r.json()
 	res = data['matches']
-	print (aid)
 
 	return res
 
@@ -169,6 +171,16 @@ def findChampionKey(cid):
 def findChampionSplash(cid):
 	key = findChampionKey(cid)
 	url = "http://ddragon.leagueoflegends.com/cdn/img/champion/splash/" + key + "_0.jpg"
+	return url
+
+def findChampionLoadingArt(cid):
+	key = findChampionKey(cid)
+	url = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+ key + "_0.jpg"
+	return url
+
+def findChampionIcon(cid):
+	key = findChampionKey(cid)
+	url = "http://ddragon.leagueoflegends.com/cdn/7.23.1/img/champion/"+ key + ".png"
 	return url
 
 def findPlayerStat(sid):
@@ -279,6 +291,7 @@ def profile(request, user=None):
 		championId = findChampionMasteries(sid)
 		championName = findChampionName(championId)
 		img_splash = findChampionSplash(championId)
+		img_loadingArt = findChampionLoadingArt(championId)
 		playerStat = findPlayerStat(sid)
 		tier = playerStat['tier']
 		rank = playerStat['rank']
@@ -289,6 +302,7 @@ def profile(request, user=None):
 			'championName' : championName,
 			'championSplash' : img_splash,
 			'summonerName' : summonerName,
+			'championLoadingArt' : img_loadingArt,
 			'tier' : tier,
 			'rank' : rank,
 			'wins' : wins,
@@ -301,6 +315,7 @@ def profile(request, user=None):
 		championId = findChampionMasteries(sid)
 		championName = findChampionName(championId)
 		img_splash = findChampionSplash(championId)
+		img_loadingArt = findChampionLoadingArt(championId)
 		playerStat = findPlayerStat(sid)
 		tier = playerStat['tier']
 		rank = playerStat['rank']
@@ -321,6 +336,7 @@ def profile(request, user=None):
 				return render(request, 'profile.html', {
 					'championName' : championName,
 					'championSplash' : img_splash,
+					'championLoadingArt' : img_loadingArt,
 					'summonerName' : user,
 					'tier' : tier,
 					'rank' : rank,

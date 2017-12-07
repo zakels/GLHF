@@ -59,12 +59,12 @@
               {% if user.is_authenticated %}
                 <p>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
                 <br>
-                <br>
                 {{ succ_msg }}
                 <br>
-                <br>
                 <br>Summoner : {{ summonerName }} </br>
-                <p> {{ championName }} </p>
+                <br>
+                <img src = "{{ championLoadingArt }}"/>
+                <p> Most Played Champion: {{ championName }} </p>
                 <p>
                 {% if tier == "BRONZE" %}
                   <img src = "{% static 'image/base-icons/bronze.png' %}"/>

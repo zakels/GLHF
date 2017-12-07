@@ -64,11 +64,11 @@
             <div class="content">
               {% if user.is_authenticated %}
                 <p>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
-                <br>
-                <br>
                 <p> {{ msg }} </p>
                 <br> Summoner : {{ summonerName }} </br>
-                <p> {{ championName }} </p>
+                <br>
+                <img src = "{{ championLoadingArt }}"/>
+                <p> Most Played Champion: {{ championName }} </p>
 
                 <p>
                 {% if tier == "BRONZE" %}
