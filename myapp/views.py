@@ -11,11 +11,6 @@ from myapp.forms import SignUpForm
 
 api_form = "?api_key="
 api_key = api_form + "RGAPI-f096fe9a-d356-42b3-a298-dcab88ddc54e"
->>>>>>> f37822d68501b265bc5c8fb7236337b1eeb09248
-
-import requests, json
-api_format = "?api_key="
-api_key = api_format+"RGAPI-cc796626-90e8-4f70-ac34-f9e41e7a40ca"
 # Create your views here.
 def index(request):
 	if request.user.is_authenticated():
@@ -271,10 +266,12 @@ def profile(request, user=None):
 		wins = playerStat['wins']
 		losses = playerStat['losses']
 
-		if request.user.profile.follow_list is None:
+		if request.user.profile.follow_list == None:
 			lt = []
 			lt.append(ids)
-		else:
+			request.user.profile.follow_list = json.dumps(lt)
+			request.user.save()
+                else:
 			jsonDec = json.decoder.JSONDecoder()
 			lt = jsonDec.decode(request.user.profile.follow_list)
 			if ids in lt:
@@ -295,7 +292,7 @@ def profile(request, user=None):
 				lt.append(ids)
 				request.user.profile.follow_list = json.dumps(lt)
 				request.user.save()
-		
+
 		message = 'You have followed ' + user
 
 		return render(request, 'profile.html', {
