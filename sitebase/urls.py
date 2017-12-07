@@ -15,15 +15,18 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from myapp import views as MyAppView
+from django.contrib.auth import views as auth_views
+from myapp import views as core_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^mypage/', MyAppView.DisplayMyPage),
-    url(r'^mypage_param/(?P<my_parameter>.+)', MyAppView.DisplayMyPageWithParameter),
-    url(r'^insert/(?P<isbn>.+);(?P<title>.+);(?P<memo>.*)', MyAppView.InsertBook),
-    url(r'^show/(?P<isbn>.+)',MyAppView.DisplayBook),
-    url(r'^testfind/(?P<summonerName>.+)',MyAppView.findSummonerId),
-    url(r'^getAccountId/(?P<summonerName>.+)',MyAppView.convertNameToAccountId),
-    url(r'^getSummonerInfo/(?P<summonerName>.+)',MyAppView.getSummonerInfo),
+    url(r'^$', core_views.index, name='index'),
+    url(r'^login/$', auth_views.login, name='login'),
+    url(r'^logout/$', auth_views.logout, name='logout'),
+    url(r'^signup/$', core_views.signup, name='signup'),
+    url(r'^recent/$',core_views.recent, name='recent'),
+    url(r'^recent/(?P<user>\w+)/$', core_views.recent, name='recent1'),
+    url(r'^profile/$', core_views.profile, name='profile'),
+    url(r'^profile/(?P<user>\w+)/$', core_views.profile, name='recent1'),
+    url(r'^follow/$', core_views.follow, name='follow'),
 ]

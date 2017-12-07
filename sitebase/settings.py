@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'sitebase.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mysql',
+        'NAME': 'app',
         'USER': 'root',
         'PASSWORD': '1234',
         'HOST': 'localhost',
@@ -126,11 +126,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Redirect Login
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-    '/var/www/static/',
-    ...
-)
-
-
+# Fixture Directory

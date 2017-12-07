@@ -1,0 +1,42 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>GLHF</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+</head>
+
+
+<body>
+  <div class="login-page">
+      <div class="header">
+        <img src="{% static 'image/download.jpg' %}" alt="image errror"/>
+      </div>
+      <div class="form">
+        <form class="login-form" method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+ <!--          <input type="text" placeholder="username"/>
+          <input type="password" placeholder="password"/> -->
+          <button type="submit">login</button>
+          <p class="message">Not registered? <a href="/signup">Create an account</a></p>
+        </form>
+      </div>
+  </div>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script src="{% static 'js/index.js' %}"></script>
+</body>
+
+</html>
+
+<!-- {% block content %}
+  <h2>Login</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  </form>
+{% endblock %} -->
