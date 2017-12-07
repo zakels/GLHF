@@ -5,7 +5,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-import requests, json, datetime
+import requests, json, datetime, collections
 
 from myapp.forms import SignUpForm
 
@@ -40,49 +40,54 @@ def index(request):
 def recent(request, user=None):
 	if user == None:
 		aid = str(request.user.profile.account_id)
+		sid = str(request.user.profile.summoner_id)
 		user = str(request.user.profile.in_game_id)
 	else:
 		aid = str(findIds(user)['aid'])
+		sid = str(findIds(user)['sid'])
 		user = str(user)
 
 	match_info = getRecentMatches(aid)
+	championId = findChampionMasteries(sid)
+	img_splash = findChampionSplash(championId)
 
 	game_id_1 = match_info[0]['gameId']
-        win = winOrLose(game_id_1,user)
-        game_id_1 = win
+	win = winOrLose(game_id_1,user)
+	game_id_1 = win
 	lane_1 = match_info[0]['lane']
 	champion_1 = findChampionName(match_info[0]['champion'])
 	timestamp_1 = datetime.datetime.fromtimestamp(match_info[0]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 	game_id_2 = match_info[1]['gameId']
-        win = winOrLose(game_id_2,user)
-        game_id_2 = win
+	win = winOrLose(game_id_2,user)
+	game_id_2 = win
 	lane_2 = match_info[1]['lane']
 	champion_2 = findChampionName(match_info[1]['champion'])
 	timestamp_2 = datetime.datetime.fromtimestamp(match_info[1]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 	game_id_3 = match_info[2]['gameId']
-        win = winOrLose(game_id_3,user)
-        game_id_3 = win
+	win = winOrLose(game_id_3,user)
+	game_id_3 = win
 	lane_3 = match_info[2]['lane']
 	champion_3 = findChampionName(match_info[2]['champion'])
 	timestamp_3 = datetime.datetime.fromtimestamp(match_info[2]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 	game_id_4 = match_info[3]['gameId']
-        win = winOrLose(game_id_4,user)
-        game_id_4 = win
+	win = winOrLose(game_id_4,user)
+	game_id_4 = win
 	lane_4 = match_info[3]['lane']
 	champion_4 = findChampionName(match_info[3]['champion'])
 	timestamp_4 = datetime.datetime.fromtimestamp(match_info[3]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 	game_id_5 = match_info[4]['gameId']
-        win = winOrLose(game_id_5,user)
-        game_id_5 = win
+	win = winOrLose(game_id_5,user)
+	game_id_5 = win
 	lane_5 = match_info[4]['lane']
 	champion_5 = findChampionName(match_info[4]['champion'])
 	timestamp_5 = datetime.datetime.fromtimestamp(match_info[4]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 	return render(request, 'recent.html', {
+			'championSplash' : img_splash,
 			'summonerName' : user,
 			'game_id_1' : game_id_1,
 			'lane_1' : lane_1,
@@ -205,39 +210,29 @@ def findIds(in_game_id):
 		return d_ids
 
 	return d_ids
+
 def winOrLose(matchid, summonerName):
-    url = "https://na1.api.riotgames.com/lol/match/v3/matches/"+str(matchid)+api_key
-    r = requests.get(url)
-    data = r.json()
-    participantId = 0
-    win = ''
-#    print (type(data))
-#    print (summonerName)
-    for item in data['participantIdentities']:
-        #print (item)
-#        if isinstance(summonerName, unicode):
- #           summonerName = unicode(summonerName)
-        #print(item['player']['summonerName'])
-        if summonerName.lower() in item['player']['summonerName'].replace(" ", "").lower():
-            #print (item)
-            participantId = item['participantId']
-            break
-       # else:
-          #  print('false')
-    if participantId != 0:
-        for item in data['participants']:
-         #   print(participantId)
-         #   print(item['stats'])
-            if participantId == item['stats']['participantId']:
-                win = item['stats']['win']
-                break
-    if win == True:
-        return 'WIN'
-    elif win == False:
-        return 'LOSE'
-    else:
-        #print(win)
-        return 'Undefined'
+	url = "https://na1.api.riotgames.com/lol/match/v3/matches/"+str(matchid)+api_key
+	r = requests.get(url)
+	data = r.json()
+	participantId = 0
+	win = ''
+
+	for item in data['participantIdentities']:
+		if summonerName.lower() in item['player']['summonerName'].replace(" ", "").lower():
+			participantId = item['participantId']
+			break
+	if participantId != 0:
+		for item in data['participants']:
+			if participantId == item['stats']['participantId']:
+				win = item['stats']['win']
+				break
+	if win == True:
+		return 'WIN'
+	elif win == False:
+		return 'LOSE'
+	else:
+		return 'Undefined'
 
 def signup(request):
     if request.method == 'POST':
@@ -355,13 +350,35 @@ def profile(request, user=None):
 		return render(request, 'profile.html')
 
 def follow(request):
-	if request.user.is_authenticated():
+	if request.user.profile.follow_list == None:
+		msg = 'You are not Following Anyone!'
 		summonerName = request.user.profile.in_game_id
-
+		sid = str(request.user.profile.summoner_id)
+		championId = findChampionMasteries(sid)
+		championName = findChampionName(championId)
+		img_splash = findChampionSplash(championId)
+		playerStat = findPlayerStat(sid)
+		tier = playerStat['tier']
+		rank = playerStat['rank']
+		wins = playerStat['wins']
+		losses = playerStat['losses']
+		return render(request, 'index.html', {
+				'summonerName' : summonerName,
+				'championName' : championName,
+				'championSplash' : img_splash,
+				'tier' : tier,
+				'rank' : rank,
+				'wins' : wins,
+				'losses' : losses,
+				'msg' : msg
+			})
+	else:
+		summonerName = request.user.profile.in_game_id
+		sid = str(request.user.profile.summoner_id)
+		championId = findChampionMasteries(sid)
+		img_splash = findChampionSplash(championId)
 		jsonDec = json.decoder.JSONDecoder()
 		lt = jsonDec.decode(request.user.profile.follow_list)
-
-		#{}
 		
 		llt = []
 		for item in lt:
@@ -369,29 +386,36 @@ def follow(request):
 			#print(said)
 			d = dict()
 			try:
+				summonerName = item['summonerName']
 				match_info = getRecentMatches(said)
-				d['summonerName'] = item['summonerName']
-				d['gameId_1'] = match_info[0]['gameId']
+				d['summonerName'] = summonerName
+				win = winOrLose(match_info[0]['gameId'], summonerName)
+				d['game_id_1'] = win
 				d['lane_1'] = match_info[0]['lane']
 				d['champion_1'] = findChampionName(match_info[0]['champion'])
 				d['timestamp_1'] = datetime.datetime.fromtimestamp(match_info[0]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
-				d['gameId_2'] = match_info[1]['gameId']
+				win = winOrLose(match_info[1]['gameId'], summonerName)
+				d['game_id_2'] = win
 				d['lane_2'] = match_info[1]['lane']
 				d['champion_2'] = findChampionName(match_info[1]['champion'])
 				d['timestamp_2'] = datetime.datetime.fromtimestamp(match_info[1]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
-				d['gameId_3'] = match_info[2]['gameId']
+				win = winOrLose(match_info[2]['gameId'], summonerName)
+				d['game_id_2'] = win
 				d['lane_3'] = match_info[2]['lane']
 				d['champion_3'] = findChampionName(match_info[2]['champion'])
 				d['timestamp_3'] = datetime.datetime.fromtimestamp(match_info[2]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 			except KeyError:
 				continue
 
+			ordered_d = collections.OrderedDict(d)
 			llt.append(d)
 
 
-		return render(request, 'follow.html', {'data' : llt})
-	else:
-		return render(request, 'follow.html')
+		return render(request, 'follow.html', {
+				'data' : llt,
+				'championSplash' : img_splash
+			})
+
 
 # def follow(request):
 # 	if request.method == 'POST':

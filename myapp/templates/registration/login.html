@@ -6,14 +6,19 @@
 <head>
   <meta charset="UTF-8">
   <title>GLHF</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/registration.css' %}"/>
+  <style type = "text/css">
+    html, body {background-image: url({% static 'image/main_page.png' %})}
+  </style>
 </head>
 
 
 <body>
   <div class="login-page">
       <div class="header">
-        <img src="{% static 'image/download.jpg' %}" alt="image errror"/>
+        <a href="/">
+          <img src="{% static 'image/download.jpg' %}" alt="image errror"/>
+        </a>
       </div>
       <div class="form">
         <form class="login-form" method="post">

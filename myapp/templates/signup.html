@@ -5,20 +5,25 @@
 <head>
   <meta charset="UTF-8">
   <title>GLHF</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/registration.css' %}"/>
+  <style type = "text/css">
+    html, body {background-image: url({% static 'image/main_page.png' %})}
+  </style>
 </head>
 
 <body>
   <div class="login-page">
       <div class="header">
-        <img src="{% static 'image/download.jpg' %}" alt="image errror"/>
+        <a href="/">
+          <img src="{% static 'image/download.jpg' %}" alt="image errror"/>
+        </a>
       </div>
       <div class="form">
         <form class="login-form" method="post">
           {% csrf_token %}
           {% for field in form %}
             <p>
-              <a style="color: green" font="Lucida Console">{{ field.label_tag }}</a>
+              <a style="color: black" font="Lucida Console">{{ field.label_tag }}</a>
               {% if field.help_text %}
                 <small style="color: grey">{{ field.help_text }}</small>
               {% endif %}
@@ -41,26 +46,3 @@
 </body>
 
 </html>
-
-
-
-
-<!-- {% block content %}
-  <h2>Sign up</h2>
-  <form method="post">
-    {% csrf_token %}
-    {% for field in form %}
-      <p>
-        {{ field.label_tag }}<br>
-        {{ field }}
-        {% if field.help_text %}
-          <small style="color: grey">{{ field.help_text }}</small>
-        {% endif %}
-        {% for error in field.errors %}
-          <p style="color: red">{{ error }}</p>
-        {% endfor %}
-      </p>
-    {% endfor %}
-    <button type="submit">Sign up</button>
-  </form>
-{% endblock %} -->
