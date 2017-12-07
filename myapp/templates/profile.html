@@ -85,9 +85,16 @@
                 <p>{{ tier }} {{ rank }}</p>
                 <p> Wins : {{ wins }} </p>
                 <p> Losses : {{ losses }} </p>
+              <p> Win Rate : {{ winRate }}%</p>
+                {% if summonerName in user.profile.follow_list %}
+                <form action="/profile/{{ summonerName }}/unfollow" method="get">
+                 <input type="submit" value="Unfollow">
+                </form>  
+                {% else %}
                 <form action="/profile/{{ summonerName }}" method="get">
                  <input type="submit" value="Follow">
                 </form>
+                {% endif %}
                 <br>
                 <br>
                 <br>

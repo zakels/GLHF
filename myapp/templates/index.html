@@ -29,10 +29,14 @@
           <a class="active" href="/signup">Sign Up</a>
           <a href="/login">Log In</a>
         {% endif %}
+        {% if user.is_authenticated %}
         <form action="/profile/" method="post" accept-charset="utf-8">
           {% csrf_token %}
           <input type="text" name="q" placeholder="Search..">
         </form>
+        {% else %}
+          <a style="float:left">You Must Login before search other's match</a>
+        {% endif %}
       </div>
     <script>
       window.onscroll = function() {myFunction()};
@@ -65,7 +69,8 @@
               {% if user.is_authenticated %}
                 <p>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
                 <p> {{ msg }} </p>
-                <br> Summoner : {{ summonerName }} </br>
+                <br> 
+                Summoner : {{ summonerName }}
                 <br>
                 <img src = "{{ championLoadingArt }}"/>
                 <p> Most Played Champion: {{ championName }} </p>
@@ -90,6 +95,7 @@
                 <p>{{ tier }} {{ rank }}</p>
                 <p> Wins : {{ wins }} </p>
                 <p> Losses : {{ losses }} </p>
+                <p> Win Rate : {{ winRate }}%</p>
                 <br>
                 <br>
                 <p>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>

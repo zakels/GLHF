@@ -28,7 +28,7 @@ def index(request):
 		rank = playerStat['rank']
 		wins = playerStat['wins']
 		losses = playerStat['losses']
-
+                winRate = float(wins)/(float(wins)+float(losses))*100.00
 		return render(request, 'index.html', {
 				'summonerName' : summonerName,
 				'championName' : championName,
@@ -37,7 +37,8 @@ def index(request):
 				'tier' : tier,
 				'rank' : rank,
 				'wins' : wins,
-				'losses' : losses
+				'losses' : losses,
+                                'winRate' : format(winRate, '.2f')
 			})
 	else:
 		return render(request, 'index.html')
@@ -300,7 +301,7 @@ def profile(request, user=None):
 			rank = playerStat['rank']
 			wins = playerStat['wins']
 			losses = playerStat['losses']
-
+                        winRate = float(wins)/(float(wins)+float(losses))*100.00
 			return render(request, 'profile.html', {
 				'championName' : championName,
 				'championSplash' : img_splash,
@@ -310,6 +311,7 @@ def profile(request, user=None):
 				'rank' : rank,
 				'wins' : wins,
 				'losses' : losses,
+                                'winRate' : format(winRate, '.2f')
 			})
 		except KeyError:
 			q_name = request.POST.get('q', '')
@@ -325,7 +327,9 @@ def profile(request, user=None):
 			rank = playerStat['rank']
 			wins = playerStat['wins']
 			losses = playerStat['losses']
-			return render(request, 'index.html', {
+
+                        winRate = float(wins)/(float(wins)+float(losses))*100.00
+                        return render(request, 'index.html', {
 				'summonerName' : summonerName,
 				'championName' : championName,
 				'championSplash' : img_splash,
@@ -334,6 +338,7 @@ def profile(request, user=None):
 				'rank' : rank,
 				'wins' : wins,
 				'losses' : losses,
+                                'winRate' : format(winRate, '.2f'),
 				'msg' : msg
 			})
 	elif request.method == 'GET':
@@ -349,7 +354,7 @@ def profile(request, user=None):
 		rank = playerStat['rank']
 		wins = playerStat['wins']
 		losses = playerStat['losses']
-
+                winRate = float(wins)/(float(wins)+float(losses))*100.00
 		if request.user.profile.follow_list == None:
 			lt = []
 			lt.append(ids)
@@ -370,6 +375,7 @@ def profile(request, user=None):
 					'rank' : rank,
 					'wins' : wins,
 					'losses' : losses,
+                                        'winRate' : format(winRate, '.2f'),
 					'succ_msg' : message
 				})
 
@@ -389,10 +395,50 @@ def profile(request, user=None):
 			'rank' : rank,
 			'wins' : wins,
 			'losses' : losses,
+                        'winRate' : format(winRate, '.2f'),
 			'succ_msg' : message
 		})
 	else:
 		return render(request, 'profile.html')
+def unfollow(request, user):
+    if request.method == 'GET':
+        lt = []
+        ids = findIds(user)
+        ids['summonerName'] = user
+        sid = str(ids['sid'])
+        championId = findChampionMasteries(sid)
+        championName = findChampionName(championId)
+        img_splash = findChampionSplash(championId)
+        img_loadingArt = findChampionLoadingArt(championId)
+        playerStat = findPlayerStat(sid)
+        tier = playerStat['tier']
+        rank = playerStat['rank']
+        wins = playerStat['wins']
+        losses = playerStat['losses']
+        winRate = float(wins)/(float(wins)+float(losses))*100.00
+        jsonDec = json.decoder.JSONDecoder()
+        lt = jsonDec.decode(request.user.profile.follow_list)
+        try:
+            lt.remove(ids)
+            message = 'You have unfollowed ' + user
+        except ValueError:
+            message = 'You are not following ' + user
+
+        #lt.append(ids)
+        request.user.profile.follow_list = json.dumps(lt)
+        request.user.save()
+        return render(request, 'profile.html', {
+		'championName' : championName,
+		'championSplash' : img_splash,
+		'championLoadingArt' : img_loadingArt,
+		'summonerName' : user,
+		'tier' : tier,
+		'rank' : rank,
+		'wins' : wins,
+		'losses' : losses,
+                'winRate' : format(winRate, '.2f'),
+		'succ_msg' : message
+	})
 
 def follow(request):
 	if request.user.profile.follow_list == None:
@@ -407,6 +453,7 @@ def follow(request):
 		rank = playerStat['rank']
 		wins = playerStat['wins']
 		losses = playerStat['losses']
+                winRate = float(wins)/(float(wins)+float(losses))*100.00
 		return render(request, 'index.html', {
 				'summonerName' : summonerName,
 				'championName' : championName,
@@ -415,6 +462,7 @@ def follow(request):
 				'rank' : rank,
 				'wins' : wins,
 				'losses' : losses,
+                                'winRate' : format(winRate, '.2f'),
 				'msg' : msg
 			})
 	else:
@@ -453,6 +501,9 @@ def follow(request):
 				d['lane_3'] = match_info[2]['lane']
 				d['champion_3'] = findChampionName(match_info[2]['champion'])
 				d['timestamp_3'] = datetime.datetime.fromtimestamp(match_info[2]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
+                                if d['game_id_2'] == "WIN" and d['game_id_1'] == "WIN" and d['game_id_3'] == "WIN":
+                                    d['dummy_4'] = 'dummy'
+                                    d['win_streak'] = "WIN STREAK!"
 			except KeyError:
 				continue
 
