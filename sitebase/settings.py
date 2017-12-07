@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'sitebase.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'imnewdb',
+        'NAME': 'hi',
         'USER': 'root',
         'PASSWORD': '1234',
         'HOST': 'localhost',

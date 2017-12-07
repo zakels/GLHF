@@ -7,6 +7,8 @@ from django.shortcuts import render, redirect
 
 import requests, json, datetime, collections
 
+from collections import OrderedDict
+
 from myapp.forms import SignUpForm
 
 api_form = "?api_key="
@@ -285,29 +287,55 @@ def signup(request):
 
 def profile(request, user=None):
 	if request.method == 'POST':
-		ids = findIds(request.POST.get('q', ''))
-		sid = str(ids['sid'])
-		summonerName = request.POST.get('q', '')
-		championId = findChampionMasteries(sid)
-		championName = findChampionName(championId)
-		img_splash = findChampionSplash(championId)
-		img_loadingArt = findChampionLoadingArt(championId)
-		playerStat = findPlayerStat(sid)
-		tier = playerStat['tier']
-		rank = playerStat['rank']
-		wins = playerStat['wins']
-		losses = playerStat['losses']
+		try:
+			ids = findIds(request.POST.get('q', ''))
+			sid = str(ids['sid'])
+			summonerName = request.POST.get('q', '')
+			championId = findChampionMasteries(sid)
+			championName = findChampionName(championId)
+			img_splash = findChampionSplash(championId)
+			img_loadingArt = findChampionLoadingArt(championId)
+			playerStat = findPlayerStat(sid)
+			tier = playerStat['tier']
+			rank = playerStat['rank']
+			wins = playerStat['wins']
+			losses = playerStat['losses']
 
-		return render(request, 'profile.html', {
-			'championName' : championName,
-			'championSplash' : img_splash,
-			'summonerName' : summonerName,
-			'championLoadingArt' : img_loadingArt,
-			'tier' : tier,
-			'rank' : rank,
-			'wins' : wins,
-			'losses' : losses,
-		})
+			return render(request, 'profile.html', {
+				'championName' : championName,
+				'championSplash' : img_splash,
+				'summonerName' : summonerName,
+				'championLoadingArt' : img_loadingArt,
+				'tier' : tier,
+				'rank' : rank,
+				'wins' : wins,
+				'losses' : losses,
+			})
+		except KeyError:
+			q_name = request.POST.get('q', '')
+			msg = 'Summoner named ' + q_name + ' does not exist'
+			sid = str(request.user.profile.summoner_id)
+			summonerName = request.user.profile.in_game_id
+			championId = findChampionMasteries(sid)
+			championName = findChampionName(championId)
+			img_splash = findChampionSplash(championId)
+			img_loadingArt = findChampionLoadingArt(championId)
+			playerStat = findPlayerStat(sid)
+			tier = playerStat['tier']
+			rank = playerStat['rank']
+			wins = playerStat['wins']
+			losses = playerStat['losses']
+			return render(request, 'index.html', {
+				'summonerName' : summonerName,
+				'championName' : championName,
+				'championSplash' : img_splash,
+				'championLoadingArt' : img_loadingArt,
+				'tier' : tier,
+				'rank' : rank,
+				'wins' : wins,
+				'losses' : losses,
+				'msg' : msg
+			})
 	elif request.method == 'GET':
 		ids = findIds(user)
 		ids['summonerName'] = user
@@ -355,6 +383,7 @@ def profile(request, user=None):
 		return render(request, 'profile.html', {
 			'championName' : championName,
 			'championSplash' : img_splash,
+			'championLoadingArt' : img_loadingArt,
 			'summonerName' : user,
 			'tier' : tier,
 			'rank' : rank,
@@ -397,10 +426,11 @@ def follow(request):
 		lt = jsonDec.decode(request.user.profile.follow_list)
 		
 		llt = []
+
 		for item in lt:
 			said = str(item['aid'])
 			#print(said)
-			d = dict()
+			d = OrderedDict()
 			try:
 				summonerName = item['summonerName']
 				match_info = getRecentMatches(said)
@@ -419,14 +449,14 @@ def follow(request):
 				d['timestamp_2'] = datetime.datetime.fromtimestamp(match_info[1]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 				d['dummy_2'] = 'dummy'
 				win = winOrLose(match_info[2]['gameId'], summonerName)
-				d['game_id_2'] = win
+				d['game_id_3'] = win
 				d['lane_3'] = match_info[2]['lane']
 				d['champion_3'] = findChampionName(match_info[2]['champion'])
 				d['timestamp_3'] = datetime.datetime.fromtimestamp(match_info[2]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 			except KeyError:
 				continue
 
-			ordered_d = collections.OrderedDict(d)
+			# ordered_d = collections.OrderedDict(d)
 			llt.append(d)
 
 
