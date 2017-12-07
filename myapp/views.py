@@ -10,7 +10,7 @@ import requests, json, datetime
 from myapp.forms import SignUpForm
 
 api_form = "?api_key="
-api_key = api_form + "RGAPI-f096fe9a-d356-42b3-a298-dcab88ddc54e"
+api_key = api_form + "RGAPI-35961e41-e909-4903-8cbe-3b3210eb32fb"
 # Create your views here.
 def index(request):
 	if request.user.is_authenticated():
@@ -47,26 +47,36 @@ def recent(request, user=None):
 	match_info = getRecentMatches(aid)
 
 	game_id_1 = match_info[0]['gameId']
+        win = winOrLose(game_id_1,user)
+        game_id_1 = win
 	lane_1 = match_info[0]['lane']
 	champion_1 = findChampionName(match_info[0]['champion'])
 	timestamp_1 = datetime.datetime.fromtimestamp(match_info[0]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 	game_id_2 = match_info[1]['gameId']
+        win = winOrLose(game_id_2,user)
+        game_id_2 = win
 	lane_2 = match_info[1]['lane']
 	champion_2 = findChampionName(match_info[1]['champion'])
 	timestamp_2 = datetime.datetime.fromtimestamp(match_info[1]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 	game_id_3 = match_info[2]['gameId']
+        win = winOrLose(game_id_3,user)
+        game_id_3 = win
 	lane_3 = match_info[2]['lane']
 	champion_3 = findChampionName(match_info[2]['champion'])
 	timestamp_3 = datetime.datetime.fromtimestamp(match_info[2]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 	game_id_4 = match_info[3]['gameId']
+        win = winOrLose(game_id_4,user)
+        game_id_4 = win
 	lane_4 = match_info[3]['lane']
 	champion_4 = findChampionName(match_info[3]['champion'])
 	timestamp_4 = datetime.datetime.fromtimestamp(match_info[3]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
 	game_id_5 = match_info[4]['gameId']
+        win = winOrLose(game_id_5,user)
+        game_id_5 = win
 	lane_5 = match_info[4]['lane']
 	champion_5 = findChampionName(match_info[4]['champion'])
 	timestamp_5 = datetime.datetime.fromtimestamp(match_info[4]['timestamp'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
@@ -193,6 +203,39 @@ def findIds(in_game_id):
 		return d_ids
 
 	return d_ids
+def winOrLose(matchid, summonerName):
+    url = "https://na1.api.riotgames.com/lol/match/v3/matches/"+str(matchid)+api_key
+    r = requests.get(url)
+    data = r.json()
+    participantId = 0
+    win = ''
+#    print (type(data))
+#    print (summonerName)
+    for item in data['participantIdentities']:
+        #print (item)
+#        if isinstance(summonerName, unicode):
+ #           summonerName = unicode(summonerName)
+        #print(item['player']['summonerName'])
+        if summonerName.lower() in item['player']['summonerName'].replace(" ", "").lower():
+            #print (item)
+            participantId = item['participantId']
+            break
+       # else:
+          #  print('false')
+    if participantId != 0:
+        for item in data['participants']:
+         #   print(participantId)
+         #   print(item['stats'])
+            if participantId == item['stats']['participantId']:
+                win = item['stats']['win']
+                break
+    if win == True:
+        return 'WIN'
+    elif win == False:
+        return 'LOSE'
+    else:
+        #print(win)
+        return 'Undefined'
 
 def signup(request):
     if request.method == 'POST':
