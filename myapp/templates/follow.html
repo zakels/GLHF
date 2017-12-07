@@ -58,15 +58,27 @@
             <div class="content">
               {% if user.is_authenticated %}
                 <p>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+                <br>
+                <br>
                 <h3> List of Recent 5 matches of Your Friends </h3>
+                <br>
                 <table>
                 {% for item in data %}
                   {% for key, value in item.items %}
-                      {{ value }}
+                      {% if key == 'summonerName' %}
+                        Summoner Name : 
+                      {% endif %}
+                      {% if value == 'dummy' %}
+                        <br>
+                      {% else %}
+                        {{ value }}
+                      {% endif %}
                   {% endfor %}
+                  <br>
                   <br>
                 {% endfor %}
                 </table>
+                <br>
                 <p>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
 
               {% else %}
@@ -84,7 +96,7 @@
 
 
   <div class="foot">
-    <p>Contact information: <a href="mailto:someone@example.com">someone@example.com</a>.</p>
+    <p><a>&copy; 2017 GLHF, Inc. All rights reserved.</a></p>
   </div>
 </body>    
 
